@@ -1,0 +1,13 @@
+15:08:47 **** Incremental Build of configuration Debug for project mail_server ****
+make all 
+Building target: mail_server
+Invoking: Cross G++ Linker
+g++  -o "mail_server"  ./Mail_server.o ./Server.o ./Server_General.o ./Server_MSG_Compose.o ./Server_MSG_Delete_Mail.o ./Server_MSG_Get_Mail.o ./Server_MSG_Login.o ./Server_MSG_Quit.o ./Server_MSG_Show_Inbox.o ./Server_Message.o   -lpthread
+Finished building target: mail_server
+ 
+15:10:02 **** Incremental Build of configuration Debug for project mail_server ****
+make all 
+make: Nothing to be done for `all'.
+15:10:10 **** Incremental Build of configuration Debug for project mail_server ****
+make all 
+make: Nothing to be done for `all'.
