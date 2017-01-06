@@ -30,6 +30,7 @@ enum ClientOpcode {
 	QUIT = 'q',
 	COMPOSE = 'c',
 	LOGIN = 'l',
+	SHOW_ONLINE_USERS = 's'
 //..
 };
 

@@ -54,6 +54,9 @@ EMessage CGeneral::stringToMsgType(string input) {
 	if(str.compare("COMPOSE") == 0)
 		return COMPOSE;
 
+	if(str.compare("SHOW_ONLINE_USERS") == 0)
+			return SHOW_ONLINE_USERS;
+
 	return UNKOWN;
 }
 

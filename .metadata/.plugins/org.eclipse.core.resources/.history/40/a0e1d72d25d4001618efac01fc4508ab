@@ -1,0 +1,68 @@
+/*
+ * Server.h
+ *
+ *  Created on: Nov 14, 2016
+ *      Author: bensterenson
+ */
+
+#include <iostream>
+#include <list>
+#include <map>
+#include "Mail.h"
+#include "Server_General.h"
+#include "Server_Message.h"
+#include "Server_MSG_Compose.h"
+#include "Server_MSG_Delete_Mail.h"
+#include "Server_MSG_Get_Mail.h"
+#include "Server_MSG_Login.h"
+#include "Server_MSG_Quit.h"
+#include "Server_MSG_Show_Inbox.h"
+
+using std::string;
+using std::list;
+using std::map;
+
+#ifndef SERVER_H_
+#define SERVER_H_
+
+class CServer {
+public:
+
+	static CServer& getInstance();
+
+	void init(string usersFile, int port = 6423);
+
+	bool Start();
+	bool extract_users();
+	bool login(CMessage* msg, string& username_output);
+
+	CMessage* ReceiveMsg(int sock);
+
+	void execute(MSG_Login* msg, string username, int sock);
+	void execute(MSG_Compose* msg, string username, int sock);
+	void execute(MSG_Delete_Mail* msg, string username, int sock);
+	void execute(MSG_Get_Mail* msg, string username, int sock);
+	void execute(MSG_Quit* msg, string username, int sock);
+	void execute(MSG_Show_Inbox* msg, string username, int sock);
+
+	list<string> online_users;
+
+private:
+	CServer();
+	virtual ~CServer();
+
+	static CServer* _instance;
+
+	static pthread_mutex_t lock;
+	int port;
+	string usersFile;
+
+	map<string, map<int, SMail*> > mails;
+
+	map<string, string> username_password;
+
+
+
+};
+
+#endif /* SERVER_H_ */

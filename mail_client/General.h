@@ -29,7 +29,9 @@ enum EMessage {
 	QUIT = 'q',
 	COMPOSE = 'c',
 	LOGIN = 'l',
-	UNKOWN = 'U'
+	UNKOWN = 'U',
+	SHOW_ONLINE_USERS ='s'
+
 };
 
 enum EReply {

@@ -12,6 +12,7 @@ CPP_SRCS += \
 ../MSG_Login.cpp \
 ../MSG_Quit.cpp \
 ../MSG_Show_Inbox.cpp \
+../MSG_Show_Online_Users.cpp \
 ../Message.cpp \
 ../Reply.cpp \
 ../main.cpp 
@@ -25,6 +26,7 @@ OBJS += \
 ./MSG_Login.o \
 ./MSG_Quit.o \
 ./MSG_Show_Inbox.o \
+./MSG_Show_Online_Users.o \
 ./Message.o \
 ./Reply.o \
 ./main.o 
@@ -38,6 +40,7 @@ CPP_DEPS += \
 ./MSG_Login.d \
 ./MSG_Quit.d \
 ./MSG_Show_Inbox.d \
+./MSG_Show_Online_Users.d \
 ./Message.d \
 ./Reply.d \
 ./main.d 

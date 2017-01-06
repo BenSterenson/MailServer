@@ -1,6 +1,31 @@
-15:06:01 **** Incremental Build of configuration Debug for project mail_client ****
+20:16:45 **** Incremental Build of configuration Debug for project mail_client ****
 make all 
-make: Nothing to be done for `all'.
+Building file: ../main.cpp
+Invoking: Cross G++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.cpp"
+../main.cpp: In function ‘int main(int, char**)’:
+../main.cpp:271:17: error: ‘readfds’ was not declared in this scope
+   refresh_sets(&readfds, &errorfds, isLoggedIn, &maxFd, chatSocket);
+                 ^
+../main.cpp:271:27: error: ‘errorfds’ was not declared in this scope
+   refresh_sets(&readfds, &errorfds, isLoggedIn, &maxFd, chatSocket);
+                           ^
+../main.cpp:271:37: error: ‘isLoggedIn’ was not declared in this scope
+   refresh_sets(&readfds, &errorfds, isLoggedIn, &maxFd, chatSocket);
+                                     ^
+../main.cpp:271:50: error: ‘maxFd’ was not declared in this scope
+   refresh_sets(&readfds, &errorfds, isLoggedIn, &maxFd, chatSocket);
+                                                  ^
+../main.cpp:271:57: error: ‘chatSocket’ was not declared in this scope
+   refresh_sets(&readfds, &errorfds, isLoggedIn, &maxFd, chatSocket);
+                                                         ^
+../main.cpp:274:32: error: ‘handle_return_value’ was not declared in this scope
+   res = handle_return_value(res);
+                                ^
+../main.cpp:276:14: error: ‘ERROR’ was not declared in this scope
+   if (res == ERROR)
+              ^
+make: *** [main.o] Error 1
 
-15:06:01 Build Finished (took 214ms)
+20:16:49 Build Finished (took 3s.256ms)
 

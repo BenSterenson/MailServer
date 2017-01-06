@@ -22,6 +22,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include "Server_General.h"
 
 using std::string;
@@ -347,6 +348,35 @@ void CServer::execute(MSG_Show_Inbox* msg, string username, int sock) {
 	CGeneral::sendall(sock, &reply[0], (int) reply.length());
 }
 
+void CServer::execute(MSG_Online_Users* msg, string username, int sock) {
+	// sends [len][opcode][msg1][msg2]...[msgN]
+	// where [msgI] = [id][sender][subject]
+	string sLine;
+	string reply = "";
+	reply += SHOW_ONLINE_USERS;
+	reply += SERVER_SUCCESS;
+
+	ifstream db_file(this->usersFile.c_str());
+	while (getline(db_file, sLine)) {
+		// locate delimiter
+		size_t pos = sLine.find('\t');
+		string userName_db;
+
+		// find user
+		userName_db = sLine.substr(0, pos);
+		bool found = std::find(this->online_users.begin(), this->online_users.end(), userName_db) != this->online_users.end();
+
+		if (found) {
+			reply += userName_db;
+			reply += ",";
+		}
+	}
+
+	reply = reply.substr(0, reply.length() - 1);
+
+	CMessage::pad_length(reply);
+	CGeneral::sendall(sock, &reply[0], (int) reply.length());
+}
 void* connection_handler(void* socket_desc) {
 	int sock = *(int*) socket_desc;
 	CServer& server = CServer::getInstance();
@@ -366,8 +396,7 @@ void* connection_handler(void* socket_desc) {
 			delete msg;
 			msg = NULL;
 			continue;
-		}
-		else if (msg->length == 0) {
+		} else if (msg->length == 0) {
 			fflush(stdout);
 			// memory is free'd after these:
 			quit = true;
@@ -381,6 +410,7 @@ void* connection_handler(void* socket_desc) {
 		// send appropriate reply
 		if (logged_in) {
 			string message = "ls";
+			server.online_users.push_back(username);
 			CMessage::pad_length(message);
 			CGeneral::sendall(sock, &message[0], (int) message.length());
 		} else {
@@ -404,8 +434,7 @@ void* connection_handler(void* socket_desc) {
 			delete msg;
 			msg = NULL;
 			continue;
-		}
-		else if (msg->length == 0) {
+		} else if (msg->length == 0) {
 			fflush(stdout);
 			// memory is free'd after these:
 			quit = true;
@@ -435,6 +464,9 @@ void* connection_handler(void* socket_desc) {
 		case QUIT: {
 			MSG_Quit* command = new MSG_Quit(msg);
 			server.execute(command, username, sock);
+			list<string>::iterator it = std::find(server.online_users.begin(), server.online_users.end(), username);
+			if (it != server.online_users.end())
+				server.online_users.erase(it);
 			delete command;
 		}
 			printf(">>> Quit: Quitting!.\n");
@@ -445,6 +477,12 @@ void* connection_handler(void* socket_desc) {
 			server.execute(command, username, sock);
 			delete command;
 		}
+			break;
+		case SHOW_ONLINE_USERS: {
+			MSG_Online_Users* command = new MSG_Online_Users(msg);
+			server.execute(command, username, sock);
+			delete command;
+		 }
 			break;
 		case LOGIN:
 			printf(">>> Login: Already logged in, ignoring.\n");
@@ -458,6 +496,20 @@ void* connection_handler(void* socket_desc) {
 	// free memory and exit
 	delete msg;
 	msg = NULL;
+
+	for (std::list<string>::iterator it=server.online_users.begin(); it != server.online_users.end(); ++it)
+		std::cout << ' ' << *it;
+
+	if (username != ""){
+		list<string>::iterator it = std::find(server.online_users.begin(), server.online_users.end(), username);
+		if (it != server.online_users.end())
+			server.online_users.erase(it);
+	}
+
+	for (std::list<string>::iterator it=server.online_users.begin(); it != server.online_users.end(); ++it)
+			std::cout << ' ' << *it;
+
+	printf(">>> Quit: Quitting!.\n");
 	free(socket_desc); // close/free file descriptor
 	pthread_exit(NULL);
 }

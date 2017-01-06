@@ -17,6 +17,7 @@
 #include "Server_MSG_Login.h"
 #include "Server_MSG_Quit.h"
 #include "Server_MSG_Show_Inbox.h"
+#include "Server_MSG_Online_Users.h"
 
 using std::string;
 using std::list;
@@ -44,6 +45,10 @@ public:
 	void execute(MSG_Get_Mail* msg, string username, int sock);
 	void execute(MSG_Quit* msg, string username, int sock);
 	void execute(MSG_Show_Inbox* msg, string username, int sock);
+	void execute(MSG_Online_Users* msg, string username, int sock);
+
+
+	list<string> online_users;
 
 private:
 	CServer();
@@ -58,6 +63,8 @@ private:
 	map<string, map<int, SMail*> > mails;
 
 	map<string, string> username_password;
+
+
 
 };
 

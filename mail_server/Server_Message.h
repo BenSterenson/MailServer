@@ -30,6 +30,7 @@ public:
 		QUIT = 'q',
 		COMPOSE = 'c',
 		LOGIN = 'l',
+		SHOW_ONLINE_USERS = 's',
 	};
 	static const string DELIMITER;
 };

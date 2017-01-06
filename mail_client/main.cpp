@@ -22,6 +22,7 @@
 #include "Client.h"
 #include <iostream>
 #include <sstream>
+#include <sys/select.h>
 
 #include "MSG_Login.h"
 #include "MSG_Show_Inbox.h"
@@ -29,6 +30,7 @@
 #include "MSG_Quit.h"
 #include "MSG_Delete_Mail.h"
 #include "MSG_Compose.h"
+#include "MSG_Show_Online_Users.h"
 using std::string;
 
 #define USER_LEN 50
@@ -160,6 +162,16 @@ void handleInput(CClient* client, EMessage type, string input) {
 	}
 		break;
 
+	case SHOW_ONLINE_USERS: {
+		MSG_Show_Online_Users online_Users = MSG_Show_Online_Users();
+		client->SendMsg(online_Users);
+
+		// Receive a reply from the server
+		CReply *tmpReply = client->ReceiveMsg();
+		online_Users.reply = REP_Show_Online_Users(tmpReply);
+		delete tmpReply;
+	}
+		break;
 	case UNKOWN: {
 		printf("Unkown command please try again\n");
 	}
@@ -168,6 +180,20 @@ void handleInput(CClient* client, EMessage type, string input) {
 	return;
 }
 
+void refresh_sets(fd_set *readfds, fd_set *errorfds, int isLoggedIn, int *maxFd, int socket){
+	FD_ZERO(readfds);
+	FD_ZERO(errorfds);
+	FD_SET(STDIN_FILENO, readfds);
+	FD_SET(STDIN_FILENO, errorfds);
+	*maxFd = STDIN_FILENO + 1;
+	if (isLoggedIn){
+		FD_SET(socket, readfds);
+		FD_SET(socket, errorfds);
+		*maxFd = socket + 1;
+	}
+}
+
+
 int main(int argc, char** argv) {
 	int port = 6423, sock;
 	struct sockaddr_in server;
@@ -175,6 +201,9 @@ int main(int argc, char** argv) {
 	string user_in = "", pass_in = "";
 	string hostname = string("localhost");
 	int user_flag;
+
+	fd_set readfds, errorfds;
+	int maxFd;
 
 
 	if (argc > 1)
@@ -239,7 +268,19 @@ int main(int argc, char** argv) {
 	}
 
 	string input;
+	int res;
 	while (true) {
+
+		refresh_sets(&readfds, &errorfds, isLoggedIn, &maxFd, chatSocket);
+
+		res = select(maxFd, &readfds, NULL, &errorfds, NULL);
+		res = handle_return_value(res);
+
+		if (res == ERROR)
+			break;
+
+
+
 		fgets(user_buff, INPUT_MAX, stdin);
 		string input = string(user_buff);
 

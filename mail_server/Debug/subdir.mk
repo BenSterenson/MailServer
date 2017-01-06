@@ -11,6 +11,7 @@ CPP_SRCS += \
 ../Server_MSG_Delete_Mail.cpp \
 ../Server_MSG_Get_Mail.cpp \
 ../Server_MSG_Login.cpp \
+../Server_MSG_Online_Users.cpp \
 ../Server_MSG_Quit.cpp \
 ../Server_MSG_Show_Inbox.cpp \
 ../Server_Message.cpp 
@@ -23,6 +24,7 @@ OBJS += \
 ./Server_MSG_Delete_Mail.o \
 ./Server_MSG_Get_Mail.o \
 ./Server_MSG_Login.o \
+./Server_MSG_Online_Users.o \
 ./Server_MSG_Quit.o \
 ./Server_MSG_Show_Inbox.o \
 ./Server_Message.o 
@@ -35,6 +37,7 @@ CPP_DEPS += \
 ./Server_MSG_Delete_Mail.d \
 ./Server_MSG_Get_Mail.d \
 ./Server_MSG_Login.d \
+./Server_MSG_Online_Users.d \
 ./Server_MSG_Quit.d \
 ./Server_MSG_Show_Inbox.d \
 ./Server_Message.d 
